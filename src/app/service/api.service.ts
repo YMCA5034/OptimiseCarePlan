@@ -17,4 +17,12 @@ export class ApiService {
     return this.http.get('https://opendata.resas-portal.go.jp/api/v1/population/sum/perYear?cityCode=11362&prefCode=11',
     { headers : new HttpHeaders({ 'X-API-KEY' : 'KbE45XmsIkvOFmi6rlyOjqhAjcM4hMifhRELvwmc'})});
   }
+
+  /**
+   * JSONを取得します。
+   */
+  public getJson(): Observable<any> {
+    return this.http.get('http://52.237.72.13:8000/');
+  }
+
 }

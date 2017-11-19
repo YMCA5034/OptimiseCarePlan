@@ -9,8 +9,10 @@ import { ApiService } from './service/api.service';
 })
 export class AppComponent {
   prefectures: any;
+  jsons: any;
 
   constructor(apiService: ApiService) {
     apiService.getPrefectures().subscribe(result => this.prefectures = result);
+    apiService.getJson().subscribe(result => this.jsons = result);
   }
 }
