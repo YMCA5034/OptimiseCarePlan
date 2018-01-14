@@ -1,0 +1,481 @@
+@charset "Shift_JIS";
+
+/*#mygraph{
+  width:calc((100% - 200px) * 0.4);
+}*/
+
+
+/*セレクトボックス*/
+.selectbox {
+  overflow: hidden;
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  position: relative;
+  border-radius: 0.2em;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 2px 0 #AAA;
+  background-color: white;
+  margin-right: 10%;
+}
+.selectbox > select {
+  width: 130%;
+  padding: 0.3em 2.4em 0.3em 0.3em;
+  font-size: 0.7rem;
+}
+select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  -o-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  border-radius: 0;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  background: none transparent;
+  vertical-align: middle;
+  font-size: inherit;
+  color: inherit;
+  box-sizing: content-box;
+}
+.selectbox:after {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: 1.8em;
+  display: block;
+  content: "";
+  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGFBMVEUAAAAZJCYWISIYIyQYIiUWIiIYIyQYIiXh0rToAAAACHRSTlMA/hTRqiinvwFkb0sAAABCSURBVHjajchBDsAgDAPBOJDw/x+XVN0icQGfPGs3i+2GEqeiLCXWLENzvdzrDfP2ls/NjfKbgimYglfBq2Dm+LwHguMA235EdKYAAAAASUVORK5CYII=") center no-repeat;
+  pointer-events: none;
+}
+
+/*プッシュボタン*/
+.pushbutton {
+
+}
+
+#sidebar button{
+  padding: 0.1em 0.6em 0.1em 0.6em;
+  font-size: 10px;
+  font-family: 'meiryo UI', sans-serif;
+}
+#tdv_title{
+  background-color: #2f5597;
+  color: white;
+  padding: 10px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 20;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+
+/*サイドバー*/
+#wrap_sidebar{
+  position: fixed;
+  height: 100%;
+  width: 160px;
+  overflow: hidden;
+  display: block;
+  right: 0px;
+  background-color: #bfbfbf;
+  border-left: ridge grey;
+  z-index: 2;
+}
+
+#sidebar{
+  top: 0px;
+  height: 100%;
+  padding-top: 10px;
+  padding-right: 10px;
+  display: block;
+  z-index: 1;
+}
+
+/*コンテンツ*/
+#wrap_contem_tdv{
+  width: 100%;
+  overflow: hidden;
+}
+
+#contem_tdv{
+  margin: auto;
+  overflow: visible;
+  position: relative;
+}
+
+#contents {
+  display: block;
+  height: 100%;
+  width: 100%;
+  max-width: 1200px;
+  padding-left: 10px;
+  padding-right: 10px;
+  position: absolute;
+}
+#contents_wrap{
+  display: block;
+  max-width: 1200px;
+  margin: auto;
+  height: 100%;
+}
+
+#sidebar h4 {
+  width: 100%;
+  font-family: 'meiryo UI', sans-serif;
+  font-weight: 300;
+}
+
+#sidebar h4, .selectbox{
+  float: left;
+  font-size: 10pt;
+  margin-top: 5pt;
+  margin-bottom: 5pt;
+}
+
+#sidebar h3{
+  width: 100%;
+  font-size: 10pt;
+  margin-top: 5pt;
+  margin-bottom: 5pt;
+  font-weight: bold;
+}
+#sidebar h3:hover{
+  color: #2f5597;
+  cursor: pointer;
+}
+
+
+
+
+svg#subgraph {
+  width: 540px;
+  height: 500px;
+  border: 1px solid grey;
+  background: ghostwhite;
+}
+
+#grapharea {
+  fill; red;
+}
+
+
+
+
+
+#contents h2  {
+  font-size: 20px;
+  font-family: 'meiryo UI', sans-serif;
+  font-weight: 400;
+}
+
+#contents h5  {
+  font-size: 10px;
+  font-family: 'meiryo UI', sans-serif;
+  font-weight: 400;
+}
+
+.industry {
+  text-anchor: middle;
+}
+.notesname  {
+  font-size: 1.2vw;
+  fill: grey;
+  dominant-baseline: hanging;
+}
+
+.graph {
+  position:absolute;
+  top: 0px;
+  right: 0px;
+  padding: 10px;
+  width: calc((100% - 200px)*0.44);
+  background-color: #e6e6e6;
+  z-index: 1000;
+}
+.graph_pull{
+  position: absolute;
+  top: 30px;
+  right:calc((100% - 200px)*0.44);
+  z-index: 1000;
+  width: 20px;
+  height: 30px;
+  display: block;
+  background-color: grey;
+}
+
+
+path {
+  fill: white;
+  stroke: grey;
+  stroke-width: 0.5;
+}
+
+.bar { fill : teal; }
+.barnum, .barnum1, .barnum2{
+  font-size: 1.1vw;
+  text-anchor: middle;
+  fill: grey;
+}
+.axis text{
+  font-family: "meiryoUI";
+  fill: grey;
+  font-size: 1.1vw;
+}
+.axis path,
+.axis line{
+  fill: none;
+  stroke: grey;
+}
+.axis_x path{
+  fill: none;
+  stroke : grey;
+}
+.axis_x text{
+  font-family: "meiryo UI";
+  fill: grey;
+  font-size: 1.1vw;
+  text-anchor: right;
+  transform-origin: left top;
+  transform: rotate(-45deg);
+
+}
+.haxisname {
+  font-size: 1.1vw;
+  fill: grey;
+  /*glyph-orientation-vertical : 180*/
+  writing-mode: tb-rl;
+}
+.tip {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 9999;
+  visibility: hidden;
+  background-color: none;
+  width: auto;
+  height: auto;
+  overflow: hidden;
+  text-anchor: middle;
+  font-size: 1vw;
+  color: grey;
+  font-family: 'meiryo UI'
+}
+.maptip {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 9999;
+  /*visibility: hidden;*/
+  background-color: none;
+  width: auto;
+  height: auto;
+  overflow: hidden;
+  text-anchor: middle;
+  font-size: 0.8vw;
+  fill: grey;
+  font-family: 'meiryo UI'
+}
+
+.back {
+  fill: lightgray;
+}
+
+.grid {
+  stroke : white;
+  /*storoke-dasharray : 4, 2;
+  shape-rendering : crispEdges;*/
+}
+
+.path {
+  fill: white;
+  stroke: grey;
+  stroke-width: 0.5;
+}
+
+
+.line {
+  fill: none;
+  /*stroke: grey;*/
+  stroke-width: 1.5;
+}
+
+.legendTitle{
+  font-size: 1.2vw;
+}
+
+.cityname_label, .value_label{
+  text-anchor: middle;
+  font-size: 0.8vw;
+  fill: grey;
+  text-shadow: 1px 1px 1px white,
+    -1px 1px 1px white,
+    1px -1px 1px white,
+    -1px -1px 1px white;
+}
+
+.legendQuant{
+  text-shadow: 1px 1px 1px white,
+    -1px 1px 1px white,
+    1px -1px 1px white,
+    -1px -1px 1px white;
+}
+
+#slider {
+  position: absolute;
+  color: white;
+  text-align: center;
+  width: 20px;
+  height: 20px;
+  border:1px solid gray;
+  z-index: 9999;
+  top:-10px;
+  left: -10px;
+}
+
+#slideline {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  margin-left: 10px;
+  position: relative;
+  width: 90%;
+  height: 4px;
+  background-color: grey;
+  float: left;
+}
+
+.label {
+  font-size: 1.2vw;
+  fill: grey;
+}
+.colorlabel {
+  font-size: 1.2vw;
+}
+#scroll_keikyo_data, #scroll_manufacturing_data{
+  height: 300px;
+  max-width: 1000px;
+  overflow-y: scroll;
+}
+
+#keikyo_data, #manufacturing_data1, #manufacturing_data2, #manufacturing_data3, #manufacturing_data4, #manufacturing_data5{
+  border-collapse: collapse;
+  width: 90%;
+  margin-left: 10px;
+}
+#keikyo_data th, #scroll_manufacturing_data th{
+  font-size: 1.2vw;
+	border: solid 1px;
+	text-align: center;
+	vertical-align: middle;
+	background-color: #cccccc;
+  border-color: #404040;
+}
+#keikyo_data td, #scroll_manufacturing_data td{
+	border: solid 1px;
+	font-size: 1.2vw;
+	padding: 3px;
+	vertical-align: middle;
+  border-color: #404040;
+}
+
+#table_title_left, #table_title_right{
+  font-size: calc(1.4vw);
+  font-weight: bold;
+  text-anchor: middle;
+}
+
+.text_header{
+  font-size: calc(1.4vw);
+  font-weight: bold;
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.text_rank_left, .text_prefecturename_left, .text_rank_right, .text_prefecturename_right{
+  font-size: calc(1.4vw);
+  text-anchor: middle;
+  dominant-baseline: middle;
+}
+
+.text_value_left, .text_value_right{
+  font-size: calc(1.4vw);
+  text-anchor: end;
+  dominant-baseline: middle;
+}
+
+#tama_rect_left, #tama_rect_right{
+  fill: #b4c7e7;
+  dominant-baseline: middle;
+}
+#loading{
+  position: absolute;
+  top:0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  width: 50px;
+  height: 50px;
+  margin: auto;
+}
+
+.rail{
+  stroke: #2f5597;
+  stroke-width: 1.2px;
+  opacity: 0.7;
+  fill: none;
+}
+.rail_selected{
+  stroke: orange;
+  stroke-width: 5px;
+  opacity: 0.7;
+  fill: none;
+}
+.station_circle, .kaigo_circle{
+  opacity: 0.5;
+}
+#map, .leaflet-pane { pointer-events: none; }
+.leaflet-zoom-animated {
+  pointer-events:all;
+}
+.map_fukidashi{
+  background-color: white;
+  display: inline-block;
+  opacity: 0.8;
+  position: absolute;
+  z-index: 999;
+  padding: 7px 10px;
+  font-size: 1.1vw;
+  line-height: 1.4;
+  color: #404040;
+  font-family: "Meirvo UI","ヒラギノ角ゴ Pro W3","Hiragino Kaku Gothic Pro","メイリオ",Meiryo,Arial,Verdana,"ＭＳ Ｐゴシック",sans-serif;
+  border: solid 3px #555;
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+
+.map_fukidashi:before{
+  content: "";
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  margin-left: -15px;
+  border: 12px solid transparent;
+  border-top: 12px solid #FFF;
+  z-index: 2;
+}
+
+.map_fukidashi:after{
+  content: "";
+  position: absolute;
+  bottom: -30px;
+  left: 50%;
+  margin-left: -17px;
+  border: 14px solid transparent;
+  border-top: 14px solid #555;
+  z-index: 1;
+}
