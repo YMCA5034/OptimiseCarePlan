@@ -34,7 +34,7 @@ var loaddata = function(){
   var graphdata = []
   var graphdata2 = []
   var graphdata_value = []
-  var datevalue = new Date(2017,11,19);
+  var datevalue = new Date(2017,10,18);
   var min_xscale = new Date(2017,10,1)*1
   var max_xscale = Date.now()*1
   var yscale = 0;
@@ -80,123 +80,283 @@ var loaddata = function(){
   setselectbox()
 
   d3.json("data/cif.json", function(error, cifd){
-    d3.json("data/log.json", function(error, logd){
+    //d3.json("data/log.json", function(error, logd){
       d3.json("data/kaigo.json", function(error, kaigod){
-        rootdata = {cif: cifd, log: logd, kaigo: kaigod}
-        var transform = d3.geo.transform({point: projectPoint});
-        var path = d3.geo.path().projection(transform);
-        var updatePosition = function(d){
-          d.pos = map.latLngToLayerPoint(new L.LatLng(d.latitude, d.longitude));
-          d3.select(this).attr( {cx: d.pos.x, cy: d.pos.y } );
-        }
-        var circlesize = 5
-        svg.append("g")
-          .attr("class", "circle_kaigo_g")
-          .selectAll(".dummy")
-          .data(rootdata.kaigo)
-          .enter()
-          .append("circle")
-          .attr("class", "kaigo_circle")
-          // .attr("name", function(d, i){
-          //   return d.properties.S12_003 + "_" +d.properties.S12_001
-          // })
-          .attr("fill","orange")
-          .attr("r", function(d, i){
-            return (circlesize) + "px"
-          })
-          .each(update_circle)
-          .on("mouseover", function(){
-              var thisdata = this
-              d3.select("#map")
-                .append("div")
-                .attr("class", "map_fukidashi")
-              $(".map_fukidashi").textWithLF(function(){
-                var output = thisdata.__data__.name + "\n"
-                  + thisdata.__data__.address
-                return output;
+        //var APP_ID = "xGnaAy8zDWeeBwYoVaWOkax7CuzNLIpPOHswzxRo"
+        var API_URL = "http://52.237.72.13:8000/"
+        var GET_URL = API_URL;
+        $.ajax({
+          url: GET_URL,
+          type: "GET",
+          // headers: {
+          //   'X-API-KEY': APP_ID
+          // },
+          async: "false",
+          success: function(logd) {
+            console.log("logd",logd)
+            rootdata = {cif: cifd, log: logd, kaigo: kaigod}
+            var transform = d3.geo.transform({point: projectPoint});
+            var path = d3.geo.path().projection(transform);
+            var updatePosition = function(d){
+              d.pos = map.latLngToLayerPoint(new L.LatLng(d.latitude, d.longitude));
+              d3.select(this).attr( {cx: d.pos.x, cy: d.pos.y } );
+            }
+            var circlesize = 5
+            svg.append("g")
+              .attr("class", "circle_kaigo_g")
+              .selectAll(".dummy")
+              .data(rootdata.kaigo)
+              .enter()
+              .append("circle")
+              .attr("class", "kaigo_circle")
+              // .attr("name", function(d, i){
+              //   return d.properties.S12_003 + "_" +d.properties.S12_001
+              // })
+              .attr("fill","orange")
+              .attr("r", function(d, i){
+                return (circlesize) + "px"
               })
-              .attr("style", function(){
-                var f_width = $(".map_fukidashi").outerWidth()
-                var f_height = $(".map_fukidashi").outerHeight()
-                return ("left:" + (thisdata.cx.baseVal.value + d3.select(".leaflet-map-pane")[0]["0"]._leaflet_pos.x - f_width * 0.5 + 3) + "px;" +
-                  "top:" + (thisdata.cy.baseVal.value + d3.select(".leaflet-map-pane")[0]["0"]._leaflet_pos.y - f_height - 12) + "px;")
-              })
-            })
-        var zoomlevel = 10
-        console.log(zoomlevel)
-        drawmap(rootdata)
-
-        function drawmap(data){
-          // svg.append("g")
-          //   .attr("class", "circle_buffer_g")
-          //   .selectAll(".dummy")
-          //   .data(data.cif)
-          //   .enter()
-          //   .append("circle")
-          //   .attr("class", "buffer_circle")
-          //   // .attr("name", function(d, i){
-          //   //   return d.properties.S12_003 + "_" +d.properties.S12_001
-          //   // })
-          //   //.attr("display", "none")
-          //   .attr("stroke", "grey")
-          //   .attr("fill","none")
-          //   .attr("r", function(d, i){
-          //     return (circlesize + zoomlevel*zoomlevel * 54 /100) + "px"
-          //   })
-          //   .each(update_circle)
-
-          svg.append("g")
-            .attr("class", "circle_g")
-            .selectAll(".dummy")
-            .data(data.cif)
-            .enter()
-            .append("circle")
-            .attr("class", "station_circle")
-            // .attr("name", function(d, i){
-            //   return d.properties.S12_003 + "_" +d.properties.S12_001
-            // })
-            .attr("fill","#2f5597")
-            .attr("r", function(d, i){
-              return (circlesize + 5) + "px"
-            })
-            .each(update_circle)
-            .on("mouseover", function(){
-                var thisdata = this
-                d3.select("#map")
-                  .append("div")
-                  .attr("class", "map_fukidashi")
-                $(".map_fukidashi").textWithLF(function(){
-                  var output = thisdata.__data__.name + "\n"
-                    + "id: " + thisdata.__data__.id + "\n"
-                    + thisdata.__data__.age +"歳 " + thisdata.__data__.sex +"性\n"
-                    + "要介護度: " + thisdata.__data__.cat1 + thisdata.__data__.cat2
-                  return output;
+              .each(update_circle)
+              .on("mouseover", function(){
+                  var thisdata = this
+                  d3.select("#map")
+                    .append("div")
+                    .attr("class", "map_fukidashi")
+                  $(".map_fukidashi").textWithLF(function(){
+                    var output = thisdata.__data__.name + "\n"
+                      + thisdata.__data__.address
+                    return output;
+                  })
+                  .attr("style", function(){
+                    var f_width = $(".map_fukidashi").outerWidth()
+                    var f_height = $(".map_fukidashi").outerHeight()
+                    return ("left:" + (thisdata.cx.baseVal.value + d3.select(".leaflet-map-pane")[0]["0"]._leaflet_pos.x - f_width * 0.5 + 3) + "px;" +
+                      "top:" + (thisdata.cy.baseVal.value + d3.select(".leaflet-map-pane")[0]["0"]._leaflet_pos.y - f_height - 12) + "px;")
+                  })
                 })
-                .attr("style", function(){
-                  var f_width = $(".map_fukidashi").outerWidth()
-                  var f_height = $(".map_fukidashi").outerHeight()
-                  return ("left:" + (thisdata.cx.baseVal.value + d3.select(".leaflet-map-pane")[0]["0"]._leaflet_pos.x - f_width * 0.5 + 3) + "px;" +
-                    "top:" + (thisdata.cy.baseVal.value + d3.select(".leaflet-map-pane")[0]["0"]._leaflet_pos.y - f_height - 12) + "px;")
+            var zoomlevel = 10
+            console.log(zoomlevel)
+            drawmap(rootdata)
+
+            function drawmap(data){
+              // svg.append("g")
+              //   .attr("class", "circle_buffer_g")
+              //   .selectAll(".dummy")
+              //   .data(data.cif)
+              //   .enter()
+              //   .append("circle")
+              //   .attr("class", "buffer_circle")
+              //   // .attr("name", function(d, i){
+              //   //   return d.properties.S12_003 + "_" +d.properties.S12_001
+              //   // })
+              //   //.attr("display", "none")
+              //   .attr("stroke", "grey")
+              //   .attr("fill","none")
+              //   .attr("r", function(d, i){
+              //     return (circlesize + zoomlevel*zoomlevel * 54 /100) + "px"
+              //   })
+              //   .each(update_circle)
+
+              svg.append("g")
+                .attr("class", "circle_g")
+                .selectAll(".dummy")
+                .data(data.cif)
+                .enter()
+                .append("circle")
+                .attr("class", "station_circle")
+                // .attr("name", function(d, i){
+                //   return d.properties.S12_003 + "_" +d.properties.S12_001
+                // })
+                .attr("fill","#2f5597")
+                .attr("r", function(d, i){
+                  return (circlesize + 5) + "px"
                 })
+                .each(update_circle)
+                .on("mouseover", function(){
+                    var thisdata = this
+                    d3.select("#map")
+                      .append("div")
+                      .attr("class", "map_fukidashi")
+                    $(".map_fukidashi").textWithLF(function(){
+                      var output = thisdata.__data__.name + "\n"
+                        + "id: " + thisdata.__data__.id + "\n"
+                        + thisdata.__data__.age +"歳 " + thisdata.__data__.sex +"性\n"
+                        + "要介護度: " + thisdata.__data__.cat1 + thisdata.__data__.cat2
+                      return output;
+                    })
+                    .attr("style", function(){
+                      var f_width = $(".map_fukidashi").outerWidth()
+                      var f_height = $(".map_fukidashi").outerHeight()
+                      return ("left:" + (thisdata.cx.baseVal.value + d3.select(".leaflet-map-pane")[0]["0"]._leaflet_pos.x - f_width * 0.5 + 3) + "px;" +
+                        "top:" + (thisdata.cy.baseVal.value + d3.select(".leaflet-map-pane")[0]["0"]._leaflet_pos.y - f_height - 12) + "px;")
+                    })
+                  })
+                  .on("mouseout", function(){
+                    d3.selectAll(".map_fukidashi")
+                      .remove()
+                  })
+                  .on("click", function(){
+                    graphdata = []
+                    graphdata2 = []
+                    graphdata_value = []
+                    var id = this.__data__.id
+                    for(i = 0; i < data.log.length; i++){
+                      if(data.log[i].id == id){
+                        graphdata.push(data.log[i])
+                      }
+                    }
+                    for(i = 0; i < graphdata.length; i++){
+                      var datevalue = new Date(graphdata[i].time)
+                      var datevalue2
+                      var datavalue3
+                      if(selectflag == "time"){
+                        datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()+"_"+ datevalue.getDate()+"_"+datevalue.getHours()
+                        datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth(), datevalue.getDate(), datevalue.getHours())
+                      }else if (selectflag == "day") {
+                        datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()+"_"+ datevalue.getDate()
+                        datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth(), datevalue.getDate())
+                      }else{
+                        datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()
+                        datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth())
+                      }
+                      graphdata[i].timevalue = datevalue2
+                      graphdata[i].timevalue2 = datevalue3
+                    }
+                    graphdata2.push(graphdata[0])
+                    var k = 0
+                    for(i = 1; i < graphdata.length; i++){
+                      for(j = k; j < graphdata2.length; j++){
+                        if(graphdata[i].timevalue == graphdata2[j].timevalue){
+                          graphdata2[j].value = graphdata2[j].value + graphdata[i].value
+                        }else{
+                          graphdata2.push(graphdata[i])
+                          k = k + 1
+                        }
+                      }
+                    }
+                    for(i =0; i < graphdata2.length; i++){
+                      graphdata_value.push(graphdata2[i].value)
+                    }
+                    datamax = d3.max(graphdata_value);
+                    datamin = d3.min(graphdata_value);
+                    console.log(graphdata_value,datamax, datamin)
+                    calcyscale()
+                    drawgraph(graphdata2)
+                    drawscale()
+
+                    updatetable(this.__data__)
+                  })
+
+              map.on('move', function(d){
+                zoomlevel = map._animateToZoom
+                svg.selectAll(".station_circle").each(update_circle)
+                svg.selectAll(".kaigo_circle").each(update_circle)
+                // svg.selectAll(".buffer_circle").each(update_circle_buffer)
               })
-              .on("mouseout", function(){
-                d3.selectAll(".map_fukidashi")
-                  .remove()
-              })
+            }
+
+            function updatetable(data){
+              d3.select("#name_area")
+                .text("お名前: " + data.name + " さん")
+              d3.select("#koritsu_value_area")
+                .text("孤立指数: " +data.koritsu_value + " ポイント")
+              d3.select("#jusho_area")
+                .text("住所: " + data.prefecturename)
+              d3.select("#age_sex_area")
+                .text("年齢: " + data.age + " 歳  性別: "+ data.sex)
+              d3.select("#youkaigo_area")
+                .text("要介護度:" + data.cat1 + " " + data.cat2)
+            }
+
+            function update_circle(d){
+              d.pos = map.latLngToLayerPoint(new L.LatLng(d.lat*1, d.lng*1));
+              d3.select(this)
+                .attr("cx", d.pos.x)
+                .attr("cy", d.pos.y)
+            }
+            // function update_circle_buffer(d){
+            //   d.pos = map.latLngToLayerPoint(new L.LatLng(d.lat*1, d.lng*1));
+            //   d3.select(this)
+            //     .attr("cx", d.pos.x)
+            //     .attr("cy", d.pos.y)
+            //     .attr("r", function(d, i){
+            //       return (circlesize + 54 / 100 / 1/zoomlevel^2) + "px"
+            //     })
+            // }
+            function projectPoint(x, y){
+              var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+              this.stream.point(point.x, point.y);
+            }
+            //縦軸スケール設定
+            function calcyscale(){
+              yscale = d3.scale.linear()
+                  .domain([0, datamax])
+                  .range([yaxisheight, 0])
+              yscale2 = (yaxisheight / (datamax))
+
+
+              xscale = d3.time.scale()
+                .domain([min_xscale, max_xscale])
+                .range([0, svgwidth - offsetx - padding_right])
+              xscale2 = (svgwidth - offsetx - padding_right)/(max_xscale - min_xscale)
+              console.log(yaxisheight,yscale2,xscale2)
+            }
+            function drawgraph(data){
+              d3.select(".bar").remove()
+              d3.select("#mygraph")
+                .append("g")
+                .attr("class", "bar")
+                .selectAll("dummy")
+                .data(data)
+                .enter()
+                .append("rect")
+                .attr("width", (svgwidth - offsetx - padding_right) / 30)
+                .attr("height", "0")
+                .attr("x", function(d,i){
+                  console.log(d.timevalue2.getDate())
+                  return d.timevalue2.getDate() * (svgwidth - offsetx - padding_right) / 19 + offsetx
+                })
+                .attr("y", svgheight - offsety)
+                .transition()
+                .duration(1000)
+                .attr("height", function(d,i){
+                  return d.value * yscale2
+                })
+                .attr("y", function(d,i){
+                  return svgheight - offsety - d.value * yscale2
+                })
+            }
+
+            //バッファーボタンプッシュ
+            // var bufferflag = 1
+            // d3.select("#bufferbutton")
+            //   .on("click", function(){
+            //     if(bufferflag == 1){
+            //       d3.selectAll(".buffer_circle")
+            //         .attr("display", "block")
+            //       bufferflag = 0
+            //     }else {
+            //       d3.selectAll(".buffer_circle")
+            //         .attr("display", "none")
+            //       bufferflag = 1
+            //     }
+            //   })
+
+            //時間ボタンプッシュ
+            d3.select("#timebutton")
               .on("click", function(){
-                graphdata = []
-                graphdata2 = []
-                graphdata_value = []
-                var id = this.__data__.id
-                for(i = 0; i < data.log.length; i++){
-                  if(data.log[i].id == id){
-                    graphdata.push(data.log[i])
-                  }
-                }
+                min_xscale = new Date(2017,10,19,0,0)*1
+                console.log(graphdata)
+                selectflag = "time"
+                console.log(selectflag)
+                var graphdata2 = []
+                var graphdata_value = []
                 for(i = 0; i < graphdata.length; i++){
+                  graphdata[i].timevalue = 0
+                  graphdata[i].timevalue2 = 0
                   var datevalue = new Date(graphdata[i].time)
-                  var datevalue2
-                  var datavalue3
+                  var datevalue2 = 0
+                  var datavalue3 = 0
                   if(selectflag == "time"){
                     datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()+"_"+ datevalue.getDate()+"_"+datevalue.getHours()
                     datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth(), datevalue.getDate(), datevalue.getHours())
@@ -231,289 +391,150 @@ var loaddata = function(){
                 calcyscale()
                 drawgraph(graphdata2)
                 drawscale()
+            })
 
-                updatetable(this.__data__)
+            //日ボタンプッシュ
+            d3.select("#daybutton")
+              .on("click", function(){
+                selectflag = "day"
+                console.log(selectflag)
+
+                var graphdata2 = []
+                var graphdata_value = []
+                for(i = 0; i < graphdata.length; i++){
+                  graphdata[i].timevalue = 0
+                  graphdata[i].timevalue2 = 0
+                  var datevalue = new Date(graphdata[i].time)
+                  var datevalue2 = 0
+                  var datavalue3 = 0
+                  if(selectflag == "time"){
+                    datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()+"_"+ datevalue.getDate()+"_"+datevalue.getHours()
+                    datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth(), datevalue.getDate(), datevalue.getHours())
+                  }else if (selectflag == "day") {
+                    datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()+"_"+ datevalue.getDate()
+                    datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth(), datevalue.getDate())
+                  }else{
+                    datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()
+                    datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth())
+                  }
+                  graphdata[i].timevalue = datevalue2
+                  graphdata[i].timevalue2 = datevalue3
+                }
+                graphdata2.push(graphdata[0])
+                var k = 0
+                for(i = 1; i < graphdata.length; i++){
+                  for(j = k; j < graphdata2.length; j++){
+                    if(graphdata[i].timevalue == graphdata2[j].timevalue){
+                      graphdata2[j].value = graphdata2[j].value + graphdata[i].value
+                    }else{
+                      graphdata2.push(graphdata[i])
+                      k = k + 1
+                    }
+                  }
+                }
+                for(i =0; i < graphdata2.length; i++){
+                  graphdata_value.push(graphdata2[i].value)
+                }
+                datamax = d3.max(graphdata_value);
+                datamin = d3.min(graphdata_value);
+                console.log(graphdata_value,datamax, datamin)
+                calcyscale()
+                drawgraph(graphdata2)
+                drawscale()
               })
 
-          map.on('move', function(d){
-            zoomlevel = map._animateToZoom
-            svg.selectAll(".station_circle").each(update_circle)
-            svg.selectAll(".kaigo_circle").each(update_circle)
-            svg.selectAll(".buffer_circle").each(update_circle_buffer)
-          })
-        }
+            //月ボタンプッシュ
+            d3.select("#monthbutton")
+              .on("click", function(){
+                min_xscale = new Date(2017,0,1)*1
+                selectflag = "month"
+                console.log(selectflag)
 
-        function updatetable(data){
-          d3.select("#name_area")
-            .text("お名前: " + data.name + " さん")
-          d3.select("#koritsu_value_area")
-            .text("孤立指数: " +data.koritsu_value + " ポイント")
-          d3.select("#jusho_area")
-            .text("住所: " + data.prefecturename)
-          d3.select("#age_sex_area")
-            .text("年齢: " + data.age + " 歳  性別: "+ data.sex)
-          d3.select("#youkaigo_area")
-            .text("要介護度:" + data.cat1 + " " + data.cat2)
-        }
-
-        function update_circle(d){
-          d.pos = map.latLngToLayerPoint(new L.LatLng(d.lat*1, d.lng*1));
-          d3.select(this)
-            .attr("cx", d.pos.x)
-            .attr("cy", d.pos.y)
-        }
-        // function update_circle_buffer(d){
-        //   d.pos = map.latLngToLayerPoint(new L.LatLng(d.lat*1, d.lng*1));
-        //   d3.select(this)
-        //     .attr("cx", d.pos.x)
-        //     .attr("cy", d.pos.y)
-        //     .attr("r", function(d, i){
-        //       return (circlesize + 54 / 100 / 1/zoomlevel^2) + "px"
-        //     })
-        // }
-        function projectPoint(x, y){
-          var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-          this.stream.point(point.x, point.y);
-        }
-        //縦軸スケール設定
-        function calcyscale(){
-          yscale = d3.scale.linear()
-              .domain([0, datamax])
-              .range([yaxisheight, 0])
-          yscale2 = (yaxisheight / (datamax))
-
-
-          xscale = d3.time.scale()
-            .domain([min_xscale, max_xscale])
-            .range([0, svgwidth - offsetx - padding_right])
-          xscale2 = (svgwidth - offsetx - padding_right)/(max_xscale - min_xscale)
-          console.log(yaxisheight,yscale2,xscale2)
-        }
-        function drawgraph(data){
-          d3.select(".bar").remove()
-          d3.select("#mygraph")
-            .append("g")
-            .attr("class", "bar")
-            .selectAll("dummy")
-            .data(data)
-            .enter()
-            .append("rect")
-            .attr("width", (svgwidth - offsetx - padding_right) / 30)
-            .attr("height", "0")
-            .attr("x", function(d,i){
-              return d.timevalue2.getDate() * (svgwidth - offsetx - padding_right) / 30 + offsetx
-            })
-            .attr("y", svgheight - offsety)
-            .transition()
-            .duration(1000)
-            .attr("height", function(d,i){
-              return d.value * yscale2
-            })
-            .attr("y", function(d,i){
-              return svgheight - offsety - d.value * yscale2
-            })
-        }
-
-        //バッファーボタンプッシュ
-        var bufferflag = 1
-        d3.select("#bufferbutton")
-          .on("click", function(){
-            if(bufferflag == 1){
-              d3.selectAll(".buffer_circle")
-                .attr("display", "block")
-              bufferflag = 0
-            }else {
-              d3.selectAll(".buffer_circle")
-                .attr("display", "none")
-              bufferflag = 1
-            }
-          })
-
-        //時間ボタンプッシュ
-        d3.select("#timebutton")
-          .on("click", function(){
-            console.log(graphdata)
-            selectflag = "time"
-            console.log(selectflag)
-            graphdata[i].timevalue = 0
-            graphdata[i].timevalue2 = 0
-            graphdata2 = []
-            graphdata_value = []
-            for(i = 0; i < graphdata.length; i++){
-              var datevalue = new Date(graphdata[i].time)
-              var datevalue2 = 0
-              var datavalue3 = 0
-              if(selectflag == "time"){
-                datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()+"_"+ datevalue.getDate()+"_"+datevalue.getHours()
-                datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth(), datevalue.getDate(), datevalue.getHours())
-              }else if (selectflag == "day") {
-                datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()+"_"+ datevalue.getDate()
-                datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth(), datevalue.getDate())
-              }else{
-                datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()
-                datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth())
-              }
-              graphdata[i].timevalue = datevalue2
-              graphdata[i].timevalue2 = datevalue3
-            }
-            graphdata2.push(graphdata[0])
-            var k = 0
-            for(i = 1; i < graphdata.length; i++){
-              for(j = k; j < graphdata2.length; j++){
-                if(graphdata[i].timevalue == graphdata2[j].timevalue){
-                  graphdata2[j].value = graphdata2[j].value + graphdata[i].value
-                }else{
-                  graphdata2.push(graphdata[i])
-                  k = k + 1
+                var graphdata2 = []
+                var graphdata_value = []
+                for(i = 0; i < graphdata.length; i++){
+                  graphdata[i].timevalue = 0
+                  graphdata[i].timevalue2 = 0
+                  var datevalue = new Date(graphdata[i].time)
+                  var datevalue2 = 0
+                  var datavalue3 = 0
+                  if(selectflag == "time"){
+                    datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()+"_"+ datevalue.getDate()+"_"+datevalue.getHours()
+                    datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth(), datevalue.getDate(), datevalue.getHours())
+                  }else if (selectflag == "day") {
+                    datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()+"_"+ datevalue.getDate()
+                    datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth(), datevalue.getDate())
+                  }else{
+                    datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()
+                    datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth())
+                  }
+                  graphdata[i].timevalue = datevalue2
+                  graphdata[i].timevalue2 = datevalue3
                 }
-              }
+                graphdata2.push(graphdata[0])
+                var k = 0
+                for(i = 1; i < graphdata.length; i++){
+                  for(j = k; j < graphdata2.length; j++){
+                    if(graphdata[i].timevalue == graphdata2[j].timevalue){
+                      graphdata2[j].value = graphdata2[j].value + graphdata[i].value
+                    }else{
+                      graphdata2.push(graphdata[i])
+                      k = k + 1
+                    }
+                  }
+                }
+                for(i =0; i < graphdata2.length; i++){
+                  graphdata_value.push(graphdata2[i].value)
+                }
+                datamax = d3.max(graphdata_value);
+                datamin = d3.min(graphdata_value);
+                console.log(graphdata_value,datamax, datamin)
+                calcyscale()
+                drawgraph(graphdata2)
+                drawscale()
+              })
+
+            //縦軸＆軸ラベル生成
+            function drawscale(){
+              d3.select(".axis").remove()
+              d3.select(".axis_x").remove()
+              d3.select("#mygraph")
+                .append("g")
+                .attr("class", "axis")
+                .attr("transform", "translate("+offsetx+", "+((svgheight - yaxisheight) - offsety )+")")
+                .call(
+                  d3.svg.axis()
+                  .scale(yscale)
+                  .orient("left")
+                )
+
+              d3.select("#mygraph")
+                .append("g")
+                .attr("class", "axis_x")
+                .attr("transform", "translate("+offsetx+", "+(svgheight - offsety )+")")
+                .call(
+                    d3.svg.axis()
+                    .scale(xscale)
+                    .orient("bottom")
+                    .tickFormat(function(d){
+                      if(selectflag == "time"){
+                        return d3.time.format("%H時")(d)
+                      }else if(selectflag == "day"){
+                        return d3.time.format("%m月%d日")(d)
+                      }else{
+                        return d3.time.format("%y年%m月")(d)
+                      }
+                    })
+                  )
+                .selectAll("text")
+                .style("text-anchor", "end")
             }
-            for(i =0; i < graphdata2.length; i++){
-              graphdata_value.push(graphdata2[i].value)
-            }
-            datamax = d3.max(graphdata_value);
-            datamin = d3.min(graphdata_value);
-            console.log(graphdata_value,datamax, datamin)
-            calcyscale()
-            drawgraph(graphdata2)
-            drawscale()
+          }
         })
 
-        //日ボタンプッシュ
-        d3.select("#daybutton")
-          .on("click", function(){
-            selectflag = "day"
-            console.log(selectflag)
-            graphdata[i].timevalue = 0
-            graphdata[i].timevalue2 = 0
-            graphdata2 = []
-            graphdata_value = []
-            for(i = 0; i < graphdata.length; i++){
-              var datevalue = new Date(graphdata[i].time)
-              var datevalue2 = 0
-              var datavalue3 = 0
-              if(selectflag == "time"){
-                datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()+"_"+ datevalue.getDate()+"_"+datevalue.getHours()
-                datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth(), datevalue.getDate(), datevalue.getHours())
-              }else if (selectflag == "day") {
-                datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()+"_"+ datevalue.getDate()
-                datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth(), datevalue.getDate())
-              }else{
-                datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()
-                datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth())
-              }
-              graphdata[i].timevalue = datevalue2
-              graphdata[i].timevalue2 = datevalue3
-            }
-            graphdata2.push(graphdata[0])
-            var k = 0
-            for(i = 1; i < graphdata.length; i++){
-              for(j = k; j < graphdata2.length; j++){
-                if(graphdata[i].timevalue == graphdata2[j].timevalue){
-                  graphdata2[j].value = graphdata2[j].value + graphdata[i].value
-                }else{
-                  graphdata2.push(graphdata[i])
-                  k = k + 1
-                }
-              }
-            }
-            for(i =0; i < graphdata2.length; i++){
-              graphdata_value.push(graphdata2[i].value)
-            }
-            datamax = d3.max(graphdata_value);
-            datamin = d3.min(graphdata_value);
-            console.log(graphdata_value,datamax, datamin)
-            calcyscale()
-            drawgraph(graphdata2)
-            drawscale()
-          })
 
-        //月ボタンプッシュ
-        d3.select("#monthbutton")
-          .on("click", function(){
-            selectflag = "month"
-            console.log(selectflag)
-            graphdata[i].timevalue = 0
-            graphdata[i].timevalue2 = 0
-            graphdata2 = []
-            graphdata_value = []
-            for(i = 0; i < graphdata.length; i++){
-              var datevalue = new Date(graphdata[i].time)
-              var datevalue2 = 0
-              var datavalue3 = 0
-              if(selectflag == "time"){
-                datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()+"_"+ datevalue.getDate()+"_"+datevalue.getHours()
-                datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth(), datevalue.getDate(), datevalue.getHours())
-              }else if (selectflag == "day") {
-                datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()+"_"+ datevalue.getDate()
-                datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth(), datevalue.getDate())
-              }else{
-                datevalue2 = datevalue.getFullYear() + "_" + datevalue.getMonth()
-                datevalue3 = new Date(datevalue.getFullYear(), datevalue.getMonth())
-              }
-              graphdata[i].timevalue = datevalue2
-              graphdata[i].timevalue2 = datevalue3
-            }
-            graphdata2.push(graphdata[0])
-            var k = 0
-            for(i = 1; i < graphdata.length; i++){
-              for(j = k; j < graphdata2.length; j++){
-                if(graphdata[i].timevalue == graphdata2[j].timevalue){
-                  graphdata2[j].value = graphdata2[j].value + graphdata[i].value
-                }else{
-                  graphdata2.push(graphdata[i])
-                  k = k + 1
-                }
-              }
-            }
-            for(i =0; i < graphdata2.length; i++){
-              graphdata_value.push(graphdata2[i].value)
-            }
-            datamax = d3.max(graphdata_value);
-            datamin = d3.min(graphdata_value);
-            console.log(graphdata_value,datamax, datamin)
-            calcyscale()
-            drawgraph(graphdata2)
-            drawscale()
-          })
-
-        //縦軸＆軸ラベル生成
-        function drawscale(){
-          d3.select(".axis").remove()
-          d3.select(".axis_x").remove()
-          d3.select("#mygraph")
-            .append("g")
-            .attr("class", "axis")
-            .attr("transform", "translate("+offsetx+", "+((svgheight - yaxisheight) - offsety )+")")
-            .call(
-              d3.svg.axis()
-              .scale(yscale)
-              .orient("left")
-            )
-
-          d3.select("#mygraph")
-            .append("g")
-            .attr("class", "axis_x")
-            .attr("transform", "translate("+offsetx+", "+(svgheight - offsety )+")")
-            .call(
-                d3.svg.axis()
-                .scale(xscale)
-                .orient("bottom")
-                .tickFormat(function(d){
-                  if(selectflag == "time"){
-                    return d3.time.format("%H時")(d)
-                  }else if(selectflag == "day"){
-                    return d3.time.format("%m月%d日")(d)
-                  }else{
-                    return d3.time.format("%y年%m月")(d)
-                  }
-                })
-              )
-            .selectAll("text")
-            .style("text-anchor", "end")
-        }
       })
-    })
+    //})
   })
 //
 //   //データ読み込み

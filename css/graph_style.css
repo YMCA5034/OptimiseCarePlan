@@ -4,6 +4,59 @@
   width:calc((100% - 200px) * 0.4);
 }*/
 
+/*タブ部分*/
+#demo1 .tab_area ul li{
+    display:block;
+    background:#dddddd;
+    border-right:1px solid #ffffff;
+    width: 100px;
+    float:left;
+    -webkit-box-sizing : border-box ;
+    -moz-box-sizing : border-box ;
+    box-sizing : border-box ;
+}
+
+#demo1 .tab_area ul li a{
+    display:block;
+    text-align:center;
+    font-size:22px;
+    padding: 5px;
+    color:#313131;
+}
+
+#demo1 .tab_area ul li a:hover {
+    background:#999999;
+    color:#ffffff;
+}
+
+/*コンテンツ部分の表示領域を固定してはみ出さないようにする*/
+#demo1 .content_area {
+    width: 440px;
+    overflow: hidden;
+    height: 400px;
+    font-size: 20px;
+    border: 1px solid #DDDDDD;
+}
+
+/*コンテンツを1行にするために必要な幅をとる*/
+#demo1 .content_area .content_area_inner {
+    width:1800px;
+}
+
+/*コンテンツのスタイル設定*/
+#demo1 .content_area .content_block {
+    height: 440px;
+    padding: 10px;
+    width: 400px;
+    float: left;
+    -webkit-box-sizing : border-box ;
+    -moz-box-sizing : border-box ;
+    box-sizing : border-box ;
+}
+
+
+
+
 
 /*セレクトボックス*/
 .selectbox {
