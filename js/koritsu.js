@@ -83,7 +83,7 @@ var loaddata = function(){
     //d3.json("data/log.json", function(error, logd){
       d3.json("data/kaigo.json", function(error, kaigod){
         //var APP_ID = "xGnaAy8zDWeeBwYoVaWOkax7CuzNLIpPOHswzxRo"
-        var API_URL = "http://52.237.72.13:8000/"
+        var API_URL = "http://52.230.67.107:8000/"
         var GET_URL = API_URL;
         $.ajax({
           url: GET_URL,
